@@ -12,7 +12,7 @@ reconstructNetDefinition <- function(modelObject, filename = NULL){
     modelSummary <- MicrosoftRML:::mxModelSummary(modelObject)
   })
   kvp <- modelSummary[["keyValuePairs"]]
-  kvp <- kvp[!is.na(kvp)]
+  kvp <- kvp[!is.na(kvp) & (sapply(kvp, length) != 0)]
   
   wb <- grep("Weights|Biases", names(kvp))
   
@@ -34,6 +34,7 @@ reconstructNetDefinition <- function(modelObject, filename = NULL){
   )
   
   z <- paste(consts, "\n", layers, sep = "\n")
+  Encoding(z) <- "ascii"
   if(!missing(filename) && !is.null(filename)) writeLines(z, con = filename)
   z
   
