@@ -1,20 +1,13 @@
 #' Reconstruct the NET# net definition from an mxNeuralNet object
 #' 
 #' @param modelObject A \link{mxNeuralNet} model object
+#' @param filename Optional file name. If supplied, write model specification to file.
 #' @export
 #' @return A character vector containing the net definition
-#' @examples 
-#' library(MicrosoftRML)
-#' model <- mxNeuralNet(isCase ~ age + parity + education + spontaneous + induced,
-#'                      transforms = list(isCase = case == 1),
-#'                      data = infert,
-#'                      numHiddenNodes = 3
-#' )
-#' cat(
-#'   reconstructNetDefinition(model)
-#' )
+#' @example inst/examples/example_reconstructNetDefinition.R
+#' @seealso readNetDefinition
 
-reconstructNetDefinition <- function(modelObject){
+reconstructNetDefinition <- function(modelObject, filename = NULL){
   capture.output({
     modelSummary <- MicrosoftRML:::mxModelSummary(modelObject)
   })
@@ -25,7 +18,7 @@ reconstructNetDefinition <- function(modelObject){
   
   
   do_one <- function(x, n){
-    sprintf("const %s = [%s]", n, paste(x, collapse = ", "))
+    sprintf("const %s = [%s];", n, paste(x, collapse = ", "))
   }
   
   wbs <- kvp[wb]
@@ -40,7 +33,9 @@ reconstructNetDefinition <- function(modelObject){
     sep = "\n"
   )
   
-  paste(consts, "\n", layers, sep = "\n")
+  z <- paste(consts, "\n", layers, sep = "\n")
+  if(!missing(filename) && !is.null(filename)) writeLines(z, con = filename)
+  z
   
 }
 
