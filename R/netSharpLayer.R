@@ -22,11 +22,15 @@
 # output Class [6] from hid2 all;
 # "
 
+#' Create or test for objects of type netSharpLayer.
+#' 
 #' @export
+#' @rdname netSharpLayer
 is.netSharpLayer <- function(x){
   inherits(x, "netSharpLayer")
 }
 
+#' @rdname netSharpLayer
 #' @export
 as.netSharpLayer <- function(x, name, shape){
   class(x) <- c("netSharpLayer", "character")
@@ -36,7 +40,7 @@ as.netSharpLayer <- function(x, name, shape){
 }
 
 #' @export
-as.character.netSharpLayer <- function(x){
+as.character.netSharpLayer <- function(x, ...){
   paste(capture.output(cat(x)), collapse = "\n")
 }
 
