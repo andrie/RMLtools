@@ -7,6 +7,8 @@
 mxSaveModel(x, file = "", ...)
 }
 \arguments{
+\item{x}{Model object}
+
 \item{file}{a \link{connection} or the name of the file where the R object is saved to or read from.}
 
 \item{...}{passed to \link{saveRDS}}

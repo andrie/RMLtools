@@ -10,6 +10,7 @@ mxReadModel <- function(file, ...){
 #' Write machine learning model to file.
 #' 
 #' @inheritParams mxReadModel
+#' @param x Model object
 #' @param ... passed to \link{saveRDS}
 #' @export
 mxSaveModel <- function(x, file = "", ...){

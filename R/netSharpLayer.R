@@ -70,6 +70,9 @@ layer_shape <- function(shape){
 #' 
 #' @param shape Numeric vector describing the number of inputs in each dimension, e.g. \code{c(3, 15, 15)}
 #' @param name Name of the layer
+#' @family layer definition functions
+#' @export
+#' @example inst/examples/example_netSharpLayer.R
 layer_input <- function(shape, name = "layer_input"){
   z <- sprintf("input %s %s;", name, layer_shape(shape))
   as.netSharpLayer(z, name = name, shape = shape)
@@ -80,6 +83,17 @@ layer_input <- function(shape, name = "layer_input"){
 #' 
 #' @export
 #' @inheritParams layer_input
+#' 
+#' @param layer A layer object, e.g. using \code{\link{layer_input}}, or NULL
+#' @param kernelshape Numeric vector describing the number of inputs in each dimension, e.g. \code{c(3, 15, 15)}
+#' @param inputshape Numeric vector describing the number of inputs in each dimension, e.g. \code{c(3, 15, 15)}.  If \code{layer} is specified, this can be NULL.
+#' @param inputname Name of the preceding layer. If \code{layer} is specified, this can be NULL.
+#' @param stride Numeric vector describing the number of inputs in each dimension, e.g. \code{c(3, 15, 15)}.
+#' @param padding Numeric vector describing the number of inputs in each dimension, e.g. \code{c(3, 15, 15)}.
+#' @param mapcount Number of maps to create.
+#' @param activation Activation function, e.g. \code{rlinear}
+#' 
+#' @family layer definition functions
 #' @example inst/examples/example_netSharpLayer.R
 layer_conv <- function(layer, kernelshape, inputshape, 
                        name, inputname, 
@@ -108,7 +122,7 @@ layer_conv <- function(layer, kernelshape, inputshape,
   if(!missing(mapcount) && !is.null(mapcount)) outputshape <- c(mapcount, outputshape)
   
   
-  convolution <- sprintf("  InputShape  = %s;\n  KernelShape = %s;\n  Stride      = %s;\n  Padding     = %s;",
+  convolution <- sprintf("  InputShape  = %s;\n  KernelShape = %s;\n  Stride      = %s;\n  LowerPad    = %s;",
                          layer_shape(inputshape),
                          layer_shape(kernelshape),
                          layer_shape(stride),
@@ -132,7 +146,16 @@ layer_conv <- function(layer, kernelshape, inputshape,
 
 # hidden hid1 [256] rlinear from pool1 all;
 
+#' Create fully connected layer.
+#' 
+#' @inheritParams layer_input
+#' @inheritParams layer_conv
+#' 
+#' @param nodes Number of nodes in hidden layer
+#' 
 #' @export
+#' @family layer definition functions
+#' @example inst/examples/example_netSharpLayer.R
 layer_full <- function(layer, nodes,
                        name, inputname,
                        activation = "rlinear"){
@@ -158,6 +181,11 @@ layer_full <- function(layer, nodes,
 
 #' Define output layer.
 #' 
+#' @inheritParams layer_input
+#' @inheritParams layer_conv
+#' @inheritParams layer_full
+#' @family layer definition functions
+#' @example inst/examples/example_netSharpLayer.R
 #' @export
 layer_output <- function(layer, nodes,
                      name, inputname,

@@ -8,7 +8,23 @@ layer_conv(layer, kernelshape, inputshape, name, inputname, stride, padding,
   mapcount, activation = "rlinear")
 }
 \arguments{
+\item{layer}{A layer object, e.g. using \code{\link{layer_input}}, or NULL}
+
+\item{kernelshape}{Numeric vector describing the number of inputs in each dimension, e.g. \code{c(3, 15, 15)}}
+
+\item{inputshape}{Numeric vector describing the number of inputs in each dimension, e.g. \code{c(3, 15, 15)}.  If \code{layer} is specified, this can be NULL.}
+
 \item{name}{Name of the layer}
+
+\item{inputname}{Name of the preceding layer. If \code{layer} is specified, this can be NULL.}
+
+\item{stride}{Numeric vector describing the number of inputs in each dimension, e.g. \code{c(3, 15, 15)}.}
+
+\item{padding}{Numeric vector describing the number of inputs in each dimension, e.g. \code{c(3, 15, 15)}.}
+
+\item{mapcount}{Number of maps to create.}
+
+\item{activation}{Activation function, e.g. \code{rlinear}}
 }
 \description{
 Construct a convolution layer.
@@ -98,6 +114,35 @@ layer_input(c(3, 50, 50), name = "pixels") \%>\%
   )
 
 
+# input pixels [3, 50, 50];
+# hidden conv1 [48, 24, 24] rlinear from pixels convolve {
+#   InputShape  = [3, 50, 50];
+#   KernelShape = [3,  5,  5];
+#   Stride      = [1,  2,  2];
+#   LowerPad    = [0, 1, 1];
+#   Sharing     = [T, T, T];
+#   MapCount    = 48;
+# }
+# 
+# hidden rnorm1 [48, 11, 11] from conv1 response norm {
+#   InputShape  = [48, 24, 24];
+#   KernelShape = [1,   4,  4];
+#   Stride      = [1,   2,  2];
+#   LowerPad    = [0, 0, 0];
+#   Alpha       = 0.0001;
+#   Beta        = 0.75;
+# }
+# 
+# hidden pool1 [48, 9, 9] from rnorm1 max pool {
+#   InputShape  = [48, 11, 11];
+#   KernelShape = [1, 3, 3];
+#   Stride      = [1, 1, 1];
+# }
+# 
+# hidden hid1 [256] rlinear from pool1 all;
+# hidden hid2 [256] rlinear from hid1 all;
+# output Class [6] from hid2 all;
+
 layer_input(c(3, 50, 50), name = "pixels") \%>\% 
   layer_conv(
     kernelshape = c(3, 5, 5), 
@@ -117,5 +162,9 @@ layer_input(c(3, 50, 50), name = "pixels") \%>\%
 
 
 
+}
+\seealso{
+Other layer.definition.functions: \code{\link{layer_full}},
+  \code{\link{layer_input}}, \code{\link{layer_output}}
 }
 
