@@ -12,5 +12,6 @@ License: MIT + file LICENSE
 Description: Helper functions to make it easier to use mxNeuralNet in the MicrosoftRML package.
 Imports:
     MicrosoftRML(>= 0.0.4)
+Suggests: magrittr
 LazyData: TRUE
 RoxygenNote: 5.0.1

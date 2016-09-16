@@ -11,6 +11,9 @@ model <- mxNeuralNet(frm,
 
 tf <- tempfile(fileext = ".nn")
 dummy <- reconstructNetDefinition(model, tf)
+cat(dummy)
+
+
 
 
 model2 <- mxNeuralNet(frm,
