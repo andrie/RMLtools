@@ -4,7 +4,8 @@
 \alias{layer_output}
 \title{Define output layer.}
 \usage{
-layer_output(layer, nodes, name, inputname, activation = "rlinear")
+layer_output(layer, nodes, name, inputname, activation = c("sigmoid",
+  "rlinear"))
 }
 \arguments{
 \item{layer}{A layer object, e.g. using \code{\link{layer_input}}, or NULL}

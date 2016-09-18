@@ -104,6 +104,7 @@ layer_conv <- function(layer, kernelshape, inputshape,
                        stride, padding, 
                        mapcount,
                        activation = "rlinear"){
+  activation <- match.arg(activation)
   if(!missing(layer) && !is.null(layer) && is.netSharpLayer(layer)){
     inputshape <- attr(layer, "shape")
     inputname  <- attr(layer, "name")
@@ -162,7 +163,9 @@ layer_conv <- function(layer, kernelshape, inputshape,
 #' @example inst/examples/example_netSharpLayer.R
 layer_full <- function(layer, nodes,
                        name, inputname,
-                       activation = "rlinear"){
+                       activation = c("sigmoid", "rlinear")
+                       ){
+  activation <- match.arg(activation)
   if(!missing(layer) && !is.null(layer) && is.netSharpLayer(layer)){
     inputname  <- attr(layer, "name")
   } else {
@@ -193,7 +196,9 @@ layer_full <- function(layer, nodes,
 #' @export
 layer_output <- function(layer, nodes,
                      name, inputname,
-                     activation = "rlinear"){
+                     activation = c("sigmoid", "rlinear")
+                     ){
+  activation <- match.arg(activation)
   if(!missing(layer) && !is.null(layer) && is.netSharpLayer(layer)){
     inputname  <- attr(layer, "name")
   } else {
@@ -209,3 +214,13 @@ layer_output <- function(layer, nodes,
   z <- sprintf("%s\n\n%s", as.character(layer), z)
   as.netSharpLayer(z, name = name)
 }
+
+layer_compute_input_size <- function(formula, sampledata){
+  z <- model.matrix(object = formula, data = head(sampledata))
+  ncol(z)
+}
+
+layer_compute_input_size(Species ~ ., iris)
+layer_compute_input_size(Sepal.Length ~ ., iris)
+layer_compute_input_size(mpg ~ ., mtcars)
+layer_compute_input_size(mpg ~ . + am:vs, mtcars)
