@@ -75,6 +75,34 @@ layer_input(c(3, 50, 50), name = "pixels") \%>\%
     stride = c(1, 2, 3)
   )
 
+layer_input(c(3, 50, 50), name = "pixels") \%>\% 
+  layer_conv(
+    kernelshape = c(1, 5, 5),
+    name = "conv1", 
+    stride = c(1, 2, 3)
+  ) \%>\% 
+  layer_pool(
+    kernelshape = c(1, 5, 5),
+    name = "conv1", 
+    stride = c(1, 2, 3)
+  )
+
+layer_norm(NULL, inputshape = c(3, 11, 5), kernelshape = c(1,5,5), name = "rnorm1", inputname = "conv")
+
+layer_input(c(3, 50, 50), name = "pixels") \%>\% 
+  layer_conv(
+    kernelshape = c(1, 5, 5),
+    name = "conv1", 
+    stride = c(1, 2, 3)
+  ) \%>\% 
+  layer_norm(
+    kernelshape = c(1, 5, 5),
+    name = "norm1", 
+    stride = c(1, 2, 3),
+    alpa = 0.0001,
+    beta = 0.75
+  )
+
 
 layer_input(c(3, 50, 50), name = "pixels") \%>\% 
   layer_conv(
@@ -98,7 +126,7 @@ layer_input(c(3, 50, 50), name = "pixels") \%>\%
 }
 \seealso{
 Other layer.definition.functions: \code{\link{layer_conv}},
-  \code{\link{layer_full}}, \code{\link{layer_output}},
-  \code{\link{layer_pool}}
+  \code{\link{layer_full}}, \code{\link{layer_norm}},
+  \code{\link{layer_output}}, \code{\link{layer_pool}}
 }
 

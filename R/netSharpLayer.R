@@ -22,6 +22,10 @@
 # output Class [6] from hid2 all;
 # "
 
+
+
+# netSharpLayer methods ---------------------------------------------------
+
 #' Create or test for objects of type netSharpLayer.
 #' 
 #' @export
@@ -66,18 +70,7 @@ layer_boolean <- function(shape){
 }
 
 
-#  ------------------------------------------------------------------------
-
-
-# hidden conv1 [48, 24, 24] rlinear from pixels convolve {
-# InputShape  = [3, 50, 50];
-# KernelShape = [3,  5,  5];
-# Stride      = [1,  2,  2];
-# LowerPad    = [0, 1, 1];
-# Sharing     = [T, T, T];
-# MapCount    = 48;
-# }
-
+# input layer -------------------------------------------------------------
 
 #' Construct input layer for NET# definition.
 #' 
@@ -91,6 +84,8 @@ layer_input <- function(shape, name = "layer_input"){
   as.netSharpLayer(z, name = name, shape = shape)
 }
 
+
+# convolution -------------------------------------------------------------
 
 #' Construct a convolution layer.
 #' 
@@ -112,11 +107,12 @@ layer_conv <- function(layer, kernelshape, inputshape,
                        name, inputname, 
                        stride, padding, sharing,
                        mapcount,
-                       activation = "rlinear",
+                       activation = c("rlinear"),
                        ...){
   mc <- as.list(match.call())[-1]
   if(is.null(mc$type)) type <- "conv" else type <- mc$type
-  activation <- match.arg(activation)
+  if(is.na(activation)) activation <- "" else activation <- match.arg(activation)
+
   if(!missing(layer) && !is.null(layer) && is.netSharpLayer(layer)){
     inputshape <- attr(layer, "shape")
     inputname  <- attr(layer, "name")
@@ -163,6 +159,9 @@ layer_conv <- function(layer, kernelshape, inputshape,
   as.netSharpLayer(z, name, outputshape)
 }
 
+
+# maximum pooling ---------------------------------------------------------
+
 #' Create maximum pooling layer.
 #' 
 #' @export
@@ -172,15 +171,53 @@ layer_pool <- function(layer, kernelshape, inputshape,
                          name, inputname, 
                          stride, padding, 
                          mapcount,
-                         activation = "rlinear",
+                         activation = NA,
                          ...){
   mc <- as.list(match.call()[-1])
+  if(is.null(mc$activation)) mc$activation <- NA
+  if(!missing(layer) && !is.null(layer) && is.netSharpLayer(layer)){
+    inputshape <- attr(layer, "shape")
+    inputname  <- attr(layer, "name")
+  } else {
+    layer <- ""
+  }
+  if(!is.null(mc$layer) && mc$layer == ".") mc$layer <- layer
   mc$type <- "max pool"
   do.call(layer_conv, mc)
 
 }
 
-# hidden hid1 [256] rlinear from pool1 all;
+# response norm -----------------------------------------------------------
+
+#' Create response normalization layer.
+#' 
+#' @export
+#' @inheritParams  layer_conv
+#' @family layer definition functions
+layer_norm <- function(layer, kernelshape, inputshape, 
+                       name, inputname, 
+                       stride, padding, 
+                       mapcount,
+                       alpha,
+                       beta,
+                       activation = NA,
+                       ...){
+  mc <- as.list(match.call()[-1])
+  if(is.null(mc$activation)) mc$activation <- NA
+  if(!missing(layer) && !is.null(layer) && is.netSharpLayer(layer)){
+    inputshape <- attr(layer, "shape")
+    inputname  <- attr(layer, "name")
+  } else {
+    layer <- NULL
+  }
+  if(!is.null(mc$layer) && mc$layer == ".") mc$layer <- layer
+  mc$type <- "response norm"
+  do.call(layer_conv, mc)
+  
+}
+
+
+# fully connected ---------------------------------------------------------
 
 #' Create fully connected layer.
 #' 
@@ -212,6 +249,9 @@ layer_full <- function(layer, nodes,
   z <- sprintf("%s\n\n%s", as.character(layer), z)
   as.netSharpLayer(z, name = name)
 }
+
+
+# layer_output ------------------------------------------------------------
 
 
 # output Class [6] from hid2 all;
