@@ -98,6 +98,7 @@ layer_input(c(3, 50, 50), name = "pixels") \%>\%
 }
 \seealso{
 Other layer.definition.functions: \code{\link{layer_conv}},
-  \code{\link{layer_full}}, \code{\link{layer_output}}
+  \code{\link{layer_full}}, \code{\link{layer_output}},
+  \code{\link{layer_pool}}
 }
 

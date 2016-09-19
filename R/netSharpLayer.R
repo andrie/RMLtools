@@ -163,8 +163,11 @@ layer_conv <- function(layer, kernelshape, inputshape,
   as.netSharpLayer(z, name, outputshape)
 }
 
+#' Create maximum pooling layer.
+#' 
 #' @export
 #' @inheritParams  layer_conv
+#' @family layer definition functions
 layer_pool <- function(layer, kernelshape, inputshape, 
                          name, inputname, 
                          stride, padding, 
