@@ -196,7 +196,7 @@ layer_full <- function(layer, nodes,
 #' @export
 layer_output <- function(layer, nodes,
                      name, inputname,
-                     activation = c("sigmoid", "rlinear")
+                     activation = c("sigmoid", "rlinear", "linear")
                      ){
   activation <- match.arg(activation)
   if(!missing(layer) && !is.null(layer) && is.netSharpLayer(layer)){
