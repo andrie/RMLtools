@@ -163,7 +163,8 @@ layer_conv <- function(layer, kernelshape, inputshape,
   as.netSharpLayer(z, name, outputshape)
 }
 
-
+#' @export
+#' @inheritParams  layer_conv
 layer_pool <- function(layer, kernelshape, inputshape, 
                          name, inputname, 
                          stride, padding, 
