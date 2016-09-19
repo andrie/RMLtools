@@ -56,6 +56,15 @@ layer_shape <- function(shape){
   sprintf("[%s]", paste(shape, collapse = ", "))
 }
 
+layer_boolean <- function(shape){
+  sh <- as.logical(shape)
+  idx <- sh
+  sh[idx]  <- "true"
+  sh[!idx] <- "false"
+  
+  sprintf("[%s]", paste(sh, collapse = ", "))
+}
+
 
 #  ------------------------------------------------------------------------
 
@@ -101,9 +110,12 @@ layer_input <- function(shape, name = "layer_input"){
 #' @example inst/examples/example_netSharpLayer.R
 layer_conv <- function(layer, kernelshape, inputshape, 
                        name, inputname, 
-                       stride, padding, 
+                       stride, padding, sharing,
                        mapcount,
-                       activation = "rlinear"){
+                       activation = "rlinear",
+                       ...){
+  mc <- as.list(match.call())[-1]
+  if(is.null(mc$type)) type <- "conv" else type <- mc$type
   activation <- match.arg(activation)
   if(!missing(layer) && !is.null(layer) && is.netSharpLayer(layer)){
     inputshape <- attr(layer, "shape")
@@ -116,6 +128,7 @@ layer_conv <- function(layer, kernelshape, inputshape,
   }
   if(missing(stride)  || is.null(stride))  stride  <- rep(1, length(inputshape))
   if(missing(padding) || is.null(padding)) padding <- rep(0, length(inputshape))
+  if(missing(sharing) || is.null(sharing)) sharing <- rep(0, length(inputshape))
   calc_outshape <- function(){
     z <- (inputshape + padding - kernelshape) / stride + 1
     z
@@ -127,27 +140,41 @@ layer_conv <- function(layer, kernelshape, inputshape,
   if(!missing(mapcount) && !is.null(mapcount)) outputshape <- c(mapcount, outputshape)
   
   
-  convolution <- sprintf("  InputShape  = %s;\n  KernelShape = %s;\n  Stride      = %s;\n  LowerPad    = %s;",
+  convolution <- sprintf("  InputShape  = %s;\n  KernelShape = %s;\n  Stride      = %s;\n  LowerPad    = %s;\n  Sharing     = %s;",
                          layer_shape(inputshape),
                          layer_shape(kernelshape),
                          layer_shape(stride),
-                         layer_shape(padding)
+                         layer_shape(padding),
+                         layer_boolean(sharing)
   )
   if(!missing(mapcount) && !is.null(mapcount)) {
     convolution <- sprintf("%s\n  Mapcount = %s;", convolution, mapcount)
   }
   
-  z <- sprintf("hidden %s %s %s from %s convolve {\n%s\n}", 
+  z <- sprintf("hidden %s %s %s from %s %s {\n%s\n}", 
                name, 
                layer_shape(outputshape),
                activation,
                inputname,
+               type,
                convolution
   )
   z <- sprintf("%s\n\n%s", as.character(layer), z)
   as.netSharpLayer(z, name, outputshape)
 }
 
+
+layer_pool <- function(layer, kernelshape, inputshape, 
+                         name, inputname, 
+                         stride, padding, 
+                         mapcount,
+                         activation = "rlinear",
+                         ...){
+  mc <- as.list(match.call()[-1])
+  mc$type <- "max pool"
+  do.call(layer_conv, mc)
+
+}
 
 # hidden hid1 [256] rlinear from pool1 all;
 
@@ -163,7 +190,7 @@ layer_conv <- function(layer, kernelshape, inputshape,
 #' @example inst/examples/example_netSharpLayer.R
 layer_full <- function(layer, nodes,
                        name, inputname,
-                       activation = c("sigmoid", "rlinear")
+                       activation = c("sigmoid", "rlinear", "linear")
                        ){
   activation <- match.arg(activation)
   if(!missing(layer) && !is.null(layer) && is.netSharpLayer(layer)){

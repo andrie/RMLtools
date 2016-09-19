@@ -8,7 +8,7 @@ library(ggplot2)
 frm <- formula(price ~ ., env = diamonds)
 frm <- formula(price ~ carat + cut + color + clarity + depth + table + x + y + z, env = diamonds)
 
-frm <- formula(price ~ carat + cut + color + clarity, env = diamonds)
+frm <- formula(price ~ carat + cut + color + clarity + depth, env = diamonds)
 
 frm
 
@@ -17,34 +17,47 @@ data_train <- diamonds[idx, ]
 data_test  <- diamonds[-idx, ]
 
 
-numIterations <- 25
+numIterations <- 100
+optim_spec <- maOptimizerSgd(learningRate = 0.02, lRateRedRatio = 0.95, lRateRedFreq = 5)
+optim_spec <- maOptimizerAda()
 
 model1 <- mxNeuralNet(frm,
                       data = data_train,
                       type = "regression",
-                      numHiddenNodes = 10, 
+                      optimizer = optim_spec,
+                      numHiddenNodes = 1024, 
                       numIterations = numIterations
 )
 
-summary(model1)
+(model1)
+
+
+#  ------------------------------------------------------------------------
 
 
 input_size <- layer_compute_input_size(frm, diamonds) + 2
 
 nn <- layer_input(input_size, name = "diamonds") %>% 
-  layer_full(10, name = "hid1") %>%
-  # layer_full(100, name = "hid2") %>%
+  # layer_full(1024, name = "hid1") %>%
+  # layer_full(64, name = "hid2") %>%
+  layer_full(512, name = "hid1", activation = "linear") %>%
+  layer_full(256, name = "hid2", activation = "linear") %>%
   layer_output(1, name = "price", activation = "linear")
 nn
 
 
 model2 <- mxNeuralNet(frm,
                       data = data_train,
-                      # optimizer = maOptimizerSgd(weightDecay = 0.1),
-                      netDefinition = nn,
                       type = "regression",
+                      optimizer = optim_spec,
+                      netDefinition = nn,
                       numIterations = numIterations
 )
+
+
+
+#  ------------------------------------------------------------------------
+
 
 models <- list(model1, model2)
 
@@ -65,4 +78,7 @@ zz <- gather(data = z, Model, Prediction, starts_with("score"))
 head(zz)
 
 library(ggplot2)
-ggplot(zz, aes(x = price, y = Prediction, colour = Model)) + geom_point()
+ggplot(zz, aes(x = price, y = Prediction, group = Model, colour = Model)) + 
+  geom_point(alpha = 0.05) +
+  geom_smooth(colour = "black", se = TRUE) +
+  facet_grid(~Model)

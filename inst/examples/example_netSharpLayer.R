@@ -28,6 +28,16 @@ layer_conv(NULL,
            stride = c(1, 2, 2)
 )
 
+layer_pool(NULL, 
+           c(1, 2, 2), 
+           inputshape = c(3, 13, 13), 
+           name = "conv1", 
+           inputname = "pixels", 
+           stride = c(1, 2, 2)
+)
+
+
+
 # Specify the number of nodes in a fully connected layer
 
 layer_full(NULL, nodes = 100, name = "h3", inputname = "conv")
