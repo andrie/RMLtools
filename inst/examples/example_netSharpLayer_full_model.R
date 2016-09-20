@@ -35,14 +35,14 @@ model1 <- mxNeuralNet(frm,
 #  ------------------------------------------------------------------------
 
 
-input_size <- layer_compute_input_size(frm, diamonds) + 2
+input_size <- mxlayer_compute_input_size(frm, diamonds) + 2
 
-nn <- layer_input(input_size, name = "diamonds") %>% 
-  # layer_full(1024, name = "hid1") %>%
-  # layer_full(64, name = "hid2") %>%
-  layer_full(512, name = "hid1", activation = "linear") %>%
-  layer_full(256, name = "hid2", activation = "linear") %>%
-  layer_output(1, name = "price", activation = "linear")
+nn <- mxlayer_input(input_size, name = "diamonds") %>% 
+  # mxlayer_full(1024, name = "hid1") %>%
+  # mxlayer_full(64, name = "hid2") %>%
+  mxlayer_full(512, name = "hid1", activation = "linear") %>%
+  mxlayer_full(256, name = "hid2", activation = "linear") %>%
+  mxlayer_output(1, name = "price", activation = "linear")
 nn
 
 
