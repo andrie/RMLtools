@@ -1,5 +1,5 @@
 Package: RMLtools
-Title: Helper Functions to Make it Easier to Use mxNeuralNet in the MicrosoftRML Package
+Title: Helper Functions to Make it Easier to Use neuralNet in the MicrosoftML Package
 Version: 0.0.2
 Date: 2016-09-20
 Authors@R: c(
@@ -9,9 +9,10 @@ Authors@R: c(
     )
 Copyright: COPYRIGHTS
 License: MIT + file LICENSE
-Description: Helper functions to make it easier to use mxNeuralNet in the MicrosoftRML package.
+Description: Helper functions to make it easier to use neuralNet in the MicrosoftML package.
 Imports:
-    MicrosoftRML(>= 0.0.4)
+    MicrosoftML(>= 0.0.5),
+    base64enc
 Suggests: magrittr
 LazyData: TRUE
 RoxygenNote: 5.0.1

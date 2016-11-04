@@ -31,41 +31,40 @@ hidden hid2 [256] rlinear from hid1 all;
 output Class [6] from hid2 all;
 "
 
-# devtools::install_github("andrie/mxNeuralNetExtra")
 
-library(mxNeuralNetExtra)
+library(RMLtools)
 library(magrittr)
-nn <- mxlayer_input(shape = c(3, 50, 50), name ="pixels") %>% 
-  mxlayer_conv(
+nn <- nnlayer_input(shape = c(3, 50, 50), name ="pixels") %>% 
+  nnlayer_conv(
     kernelshape = c(3, 5, 5), 
     stride      = c(1, 2, 2), 
     sharing = c(1, 1, 1),
     mapcount = 64,
     name = "conv1"
   ) %>% 
-  mxlayer_norm(
+  nnlayer_norm(
     kernelshape = c(1, 4, 4), 
     stride      = c(1, 2, 2), 
     name = "rnorm1",
     alpha = 0.0001,
     beta  = 0.75
   ) %>% 
-  mxlayer_pool(
+  nnlayer_pool(
     kernelshape = c(1, 3, 3), 
     stride      = c(1, 1, 1), 
     name = "pool1"
   ) %>% 
-  mxlayer_full(
+  nnlayer_full(
     nodes      = 256, 
     name       = "hid1",
     activation = "rlinear"
   ) %>% 
-  mxlayer_full(
+  nnlayer_full(
     nodes      = 256, 
     name       = "hid2",
     activation = "rlinear"
   ) %>% 
-  mxlayer_output(
+  nnlayer_output(
     nodes = 6, 
     name  = "Class"
   )

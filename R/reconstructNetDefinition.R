@@ -1,6 +1,6 @@
-#' Reconstruct the NET# net definition from an mxNeuralNet object
+#' Reconstruct the NET# net definition from an neuralNet object
 #' 
-#' @param modelObject A \link{mxNeuralNet} model object
+#' @param modelObject A \link[MicrosoftML]{neuralNet} model object
 #' @param filename Optional file name. If supplied, write model specification to file.
 #' @export
 #' @return A character vector containing the net definition
@@ -9,7 +9,7 @@
 
 reconstructNetDefinition <- function(modelObject, filename = NULL){
   capture.output({
-    modelSummary <- MicrosoftRML:::mxModelSummary(modelObject)
+    modelSummary <- MicrosoftML:::mlModelSummary(modelObject)
   })
   kvp <- modelSummary[["keyValuePairs"]]
   kvp <- kvp[!is.na(kvp) & (sapply(kvp, length) != 0)]

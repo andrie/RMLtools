@@ -2,12 +2,12 @@
 % Please edit documentation in R/reconstructNetDefinition.R
 \name{reconstructNetDefinition}
 \alias{reconstructNetDefinition}
-\title{Reconstruct the NET# net definition from an mxNeuralNet object}
+\title{Reconstruct the NET# net definition from an neuralNet object}
 \usage{
 reconstructNetDefinition(modelObject, filename = NULL)
 }
 \arguments{
-\item{modelObject}{A \link{mxNeuralNet} model object}
+\item{modelObject}{A \link[MicrosoftML]{neuralNet} model object}
 
 \item{filename}{Optional file name. If supplied, write model specification to file.}
 }
@@ -15,11 +15,11 @@ reconstructNetDefinition(modelObject, filename = NULL)
 A character vector containing the net definition
 }
 \description{
-Reconstruct the NET# net definition from an mxNeuralNet object
+Reconstruct the NET# net definition from an neuralNet object
 }
 \examples{
-library(MicrosoftRML)
-mxNeuralNet(isCase ~ age + parity + education + spontaneous + induced,
+library(MicrosoftML)
+neuralNet(isCase ~ age + parity + education + spontaneous + induced,
                      transforms = list(isCase = case == 1),
                      data = infert,
                      numHiddenNodes = 3, 
@@ -27,7 +27,7 @@ mxNeuralNet(isCase ~ age + parity + education + spontaneous + induced,
                      reportProgress = 0,
             numIterations = 20
 )
-model <- mxNeuralNet(isCase ~ age + parity + education + spontaneous + induced,
+model <- neuralNet(isCase ~ age + parity + education + spontaneous + induced,
                     transforms = list(isCase = case == 1),
                     data = infert,
                     numHiddenNodes = 3, 
@@ -45,7 +45,7 @@ cat(
 )
 
 
-mxNeuralNet(isCase ~ age + parity + education + spontaneous + induced,
+neuralNet(isCase ~ age + parity + education + spontaneous + induced,
             transforms = list(isCase = case == 1),
             data = infert, 
             netDefinition = readNetDefinition(tf),

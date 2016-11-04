@@ -1,6 +1,6 @@
-library(MicrosoftRML)
+library(MicrosoftML)
 frm <- as.formula(isCase ~ age + parity + education + spontaneous + induced)
-model <- mxNeuralNet(frm,
+model <- neuralNet(frm,
                      data = infert,
                      transforms = list(isCase = case == 1),
                      numHiddenNodes = 3, 
@@ -16,7 +16,7 @@ cat(dummy)
 
 
 
-model2 <- mxNeuralNet(frm,
+model2 <- neuralNet(frm,
                       transforms = list(isCase = case == 1),
                       data = infert, 
                       netDefinition = readNetDefinition(tf),

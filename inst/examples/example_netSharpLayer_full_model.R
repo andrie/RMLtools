@@ -1,7 +1,7 @@
 
 # use layer functions to specify a neural network -------------------------
 
-library(MicrosoftRML)
+library(MicrosoftML)
 library(magrittr)
 library(ggplot2)
 
@@ -18,14 +18,14 @@ data_test  <- diamonds[-idx, ]
 
 
 numIterations <- 100
-optim_spec <- maOptimizerSgd(learningRate = 0.02, lRateRedRatio = 0.95, lRateRedFreq = 5)
-optim_spec <- maOptimizerAda()
+optim_spec <- sgd(learningRate = 0.02, lRateRedRatio = 0.95, lRateRedFreq = 5)
+optim_spec <- adaDeltaSgd()
 
-model1 <- mxNeuralNet(frm,
+model1 <- neuralNet(frm,
                       data = data_train,
                       type = "regression",
                       optimizer = optim_spec,
-                      numHiddenNodes = 1024, 
+                      numHiddenNodes = 128, 
                       numIterations = numIterations
 )
 
@@ -35,18 +35,16 @@ model1 <- mxNeuralNet(frm,
 #  ------------------------------------------------------------------------
 
 
-input_size <- mxlayer_compute_input_size(frm, diamonds) + 2
+input_size <- nnlayer_compute_input_size(frm, diamonds) + 2
 
-nn <- mxlayer_input(input_size, name = "diamonds") %>% 
-  # mxlayer_full(1024, name = "hid1") %>%
-  # mxlayer_full(64, name = "hid2") %>%
-  mxlayer_full(512, name = "hid1", activation = "linear") %>%
-  mxlayer_full(256, name = "hid2", activation = "linear") %>%
-  mxlayer_output(1, name = "price", activation = "linear")
+nn <- nnlayer_input(input_size, name = "diamonds") %>% 
+  nnlayer_full(64, name = "hid1", activation = "linear") %>%
+  nnlayer_full(64, name = "hid2", activation = "linear") %>%
+  nnlayer_output(1, name = "price", activation = "linear")
 nn
 
 
-model2 <- mxNeuralNet(frm,
+model2 <- neuralNet(frm,
                       data = data_train,
                       type = "regression",
                       optimizer = optim_spec,
@@ -63,7 +61,7 @@ models <- list(model1, model2)
 
 pred <- lapply(seq_along(models), 
                function(i){
-                 mxPredict(models[[i]], data_test, 
+                 predict(models[[i]], data_test, 
                            extraVarsToWrite = "price", suffix = i)
                }
 )

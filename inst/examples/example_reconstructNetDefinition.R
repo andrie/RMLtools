@@ -1,5 +1,5 @@
-library(MicrosoftRML)
-mxNeuralNet(isCase ~ age + parity + education + spontaneous + induced,
+library(MicrosoftML)
+neuralNet(isCase ~ age + parity + education + spontaneous + induced,
                      transforms = list(isCase = case == 1),
                      data = infert,
                      numHiddenNodes = 3, 
@@ -7,7 +7,7 @@ mxNeuralNet(isCase ~ age + parity + education + spontaneous + induced,
                      reportProgress = 0,
             numIterations = 20
 )
-model <- mxNeuralNet(isCase ~ age + parity + education + spontaneous + induced,
+model <- neuralNet(isCase ~ age + parity + education + spontaneous + induced,
                     transforms = list(isCase = case == 1),
                     data = infert,
                     numHiddenNodes = 3, 
@@ -25,7 +25,7 @@ cat(
 )
 
 
-mxNeuralNet(isCase ~ age + parity + education + spontaneous + induced,
+neuralNet(isCase ~ age + parity + education + spontaneous + induced,
             transforms = list(isCase = case == 1),
             data = infert, 
             netDefinition = readNetDefinition(tf),
